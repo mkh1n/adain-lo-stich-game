@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameBoy пиксель-арт: Исправленные углы</title>
+    <title>GameBoy — точное расстояние до квадрата</title>
     <style>
+        /* Все стили без изменений (такие же, как в предыдущем рабочем варианте) */
         * {
             box-sizing: border-box;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
             font-family: 'Courier New', Courier, monospace;
         }
-
         body {
             background: #2d1b0e;
             display: flex;
@@ -21,7 +21,6 @@
             margin: 0;
             padding: 16px;
         }
-
         .gameboy-frame {
             background: #9bbc0f;
             padding: 24px 24px 32px 24px;
@@ -29,22 +28,18 @@
             box-shadow: inset -4px -4px 0 #6b8c0c, inset 4px 4px 0 #c4e01e, 0 10px 0 #3f2e1b;
             border: 2px solid #0f380f;
         }
-
         .game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-
         .avatars-row, .avatars-row-bottom {
             display: flex;
             justify-content: space-between;
             width: 1200px;
         }
-        
         .avatars-row { margin-bottom: 12px; }
         .avatars-row-bottom { margin-top: 12px; }
-
         .avatar-frame {
             display: flex;
             align-items: center;
@@ -55,7 +50,6 @@
             padding: 8px 12px;
             width: 220px;
         }
-
         .avatar-square {
             width: 56px;
             height: 56px;
@@ -63,12 +57,10 @@
             background: #6b8c6b;
             box-shadow: inset -2px -2px 0 #2f4a2f, inset 2px 2px 0 #8bb08b;
         }
-
         .avatar-blue .avatar-square { background: #4a7db5; background-image: repeating-linear-gradient(45deg, #2a4d8a 0px, #2a4d8a 4px, #6a9fd0 4px, #6a9fd0 8px); }
         .avatar-yellow .avatar-square { background: #e3c14e; background-image: repeating-linear-gradient(45deg, #b38b2a 0px, #b38b2a 4px, #f5e17a 4px, #f5e17a 8px); }
         .avatar-pink .avatar-square { background: #d96c9e; background-image: repeating-linear-gradient(45deg, #a13e6f 0px, #a13e6f 4px, #f7a8c4 4px, #f7a8c4 8px); }
         .avatar-red .avatar-square { background: #c44b4b; background-image: repeating-linear-gradient(45deg, #8b2a2a 0px, #8b2a2a 4px, #e68080 4px, #e68080 8px); }
-
         .status-bar-container {
             flex: 1;
             height: 24px;
@@ -76,14 +68,12 @@
             border: 3px solid #0f280f;
             box-shadow: inset 1px 1px 0 #0b1b0b;
         }
-
         .status-fill {
             height: 100%;
             width: 0%;
             transition: width 0.1s;
             box-shadow: inset -1px -1px 0 #2d6b2d, inset 1px 1px 0 #8fd08f;
         }
-
         .game-screen {
             position: relative;
             width: 1200px;
@@ -95,7 +85,6 @@
             overflow: hidden;
             margin: 0 auto;
         }
-
         .map-background {
             position: absolute;
             top: 0;
@@ -107,7 +96,6 @@
             background-color: #8bb15a;
             z-index: 1;
         }
-
         .center-square {
             position: absolute;
             top: 50%;
@@ -121,7 +109,6 @@
             z-index: 10;
             pointer-events: none;
         }
-
         .character {
             position: absolute;
             width: 56px;
@@ -133,13 +120,11 @@
             z-index: 100;
             cursor: grab;
         }
-
         .character:active {
             cursor: grabbing;
             filter: brightness(1.1);
             transform: translate(-50%, -48%);
         }
-
         .char-blue { background: #4a7db5; }
         .char-yellow { background: #e3c14e; }
         .char-pink { background: #d96c9e; }
@@ -149,7 +134,6 @@
 <body>
     <div class="gameboy-frame">
         <div class="game-container">
-            <!-- Верхний ряд аватаров -->
             <div class="avatars-row">
                 <div class="avatar-frame avatar-blue">
                     <div class="avatar-square"></div>
@@ -160,20 +144,15 @@
                     <div class="status-bar-container"><div class="status-fill" id="bar1" style="width: 0%; background: #e3c14e;"></div></div>
                 </div>
             </div>
-
-            <!-- Игровое поле -->
             <div class="game-screen" id="gameScreen">
                 <div class="map-background"></div>
                 <div class="center-square"></div>
-
-                <!-- Персонажи ТОЧНО В УГЛАХ (координаты 40,40 от края с учётом радиуса) -->
+                <!-- Персонажи строго по углам (координаты от верхнего левого угла с учётом радиуса) -->
                 <div class="character char-blue" id="char0" data-id="0" style="top: 40px; left: 40px;"></div>
                 <div class="character char-yellow" id="char1" data-id="1" style="top: 40px; left: 1160px;"></div>
                 <div class="character char-pink" id="char2" data-id="2" style="top: 660px; left: 40px;"></div>
                 <div class="character char-red" id="char3" data-id="3" style="top: 660px; left: 1160px;"></div>
             </div>
-
-            <!-- Нижний ряд аватаров -->
             <div class="avatars-row-bottom">
                 <div class="avatar-frame avatar-pink">
                     <div class="avatar-square"></div>
@@ -193,88 +172,63 @@
             const bars = [document.getElementById('bar0'), document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3')];
             const gameScreen = document.getElementById('gameScreen');
             
-            // Центральный квадрат
+            // Центральный квадрат (размер 120x120)
             const squareSize = 120;
             const centerX = 600;
             const centerY = 350;
-            
-            // Границы квадрата
             const squareLeft = centerX - squareSize/2;
             const squareRight = centerX + squareSize/2;
             const squareTop = centerY - squareSize/2;
             const squareBottom = centerY + squareSize/2;
             
-            // === ИСПРАВЛЕНО: Угловые позиции ТОЧНО соответствуют начальным координатам ===
+            // Угловые позиции (стартовые)
             const cornerPositions = [
-                { x: 40, y: 40 },    // синий - левый верхний угол
-                { x: 1160, y: 40 },  // желтый - правый верхний
-                { x: 40, y: 660 },   // розовый - левый нижний
-                { x: 1160, y: 660 }  // алый - правый нижний
+                { x: 40, y: 40 },
+                { x: 1160, y: 40 },
+                { x: 40, y: 660 },
+                { x: 1160, y: 660 }
             ];
             
-            // Максимальные расстояния от углов до ближайшей точки квадрата
-            let maxDistances = [];
-            
-            function calculateMaxDistances() {
-                for (let i = 0; i < 4; i++) {
-                    const corner = cornerPositions[i];
-                    
-                    // Находим ближайшую точку на границе квадрата
-                    let targetX = corner.x;
-                    let targetY = corner.y;
-                    
-                    if (corner.x < squareLeft) targetX = squareLeft;
-                    else if (corner.x > squareRight) targetX = squareRight;
-                    
-                    if (corner.y < squareTop) targetY = squareTop;
-                    else if (corner.y > squareBottom) targetY = squareBottom;
-                    
-                    const dx = corner.x - targetX;
-                    const dy = corner.y - targetY;
-                    maxDistances[i] = Math.sqrt(dx*dx + dy*dy);
-                    
-                    // Защита от деления на ноль (если угол внутри квадрата)
-                    if (maxDistances[i] === 0) maxDistances[i] = 0.001;
-                }
+            // Функция расстояния от точки до прямоугольника (квадрата)
+            function distanceToSquare(px, py) {
+                let dx = 0;
+                if (px < squareLeft) dx = squareLeft - px;
+                else if (px > squareRight) dx = px - squareRight;
+                let dy = 0;
+                if (py < squareTop) dy = squareTop - py;
+                else if (py > squareBottom) dy = py - squareBottom;
+                return Math.sqrt(dx*dx + dy*dy);
             }
-            calculateMaxDistances();
-
-            // === ИСПРАВЛЕННАЯ ФУНКЦИЯ ПРОГРЕССА ===
+            
+            // Вычисляем максимальное расстояние от каждого угла до квадрата
+            let maxDistances = [];
+            for (let i = 0; i < 4; i++) {
+                const d = distanceToSquare(cornerPositions[i].x, cornerPositions[i].y);
+                maxDistances[i] = d > 0 ? d : 0.001; // защита от нуля
+            }
+            
+            // Функция прогресса для персонажа
             function computeProgress(charIndex) {
                 const char = characters[charIndex];
-                
-                // Берём текущие координаты или начальные (угловые)
                 const currentX = parseFloat(char.style.left) || cornerPositions[charIndex].x;
                 const currentY = parseFloat(char.style.top) || cornerPositions[charIndex].y;
                 
-                // 1. Если внутри квадрата — сразу 100%
-                if (currentX >= squareLeft && currentX <= squareRight && 
-                    currentY >= squareTop && currentY <= squareBottom) {
-                    return 1.0;
-                }
+                const distToSquare = distanceToSquare(currentX, currentY);
+                if (distToSquare === 0) return 1.0; // уже внутри квадрата
                 
-                // 2. Считаем расстояние ОТ УГЛА
-                const corner = cornerPositions[charIndex];
-                const dx = currentX - corner.x;
-                const dy = currentY - corner.y;
-                const distanceFromCorner = Math.sqrt(dx*dx + dy*dy);
-                
-                // 3. Прогресс = сколько прошёл от угла к квадрату
-                // (нормируем на максимальное расстояние до квадрата)
-                let progress = distanceFromCorner / maxDistances[charIndex];
-                
-                // 4. Обрезаем от 0 до 1 и возвращаем
+                const maxDist = maxDistances[charIndex];
+                let progress = 1 - (distToSquare / maxDist);
                 return Math.max(0, Math.min(1, progress));
             }
-
+            
             function updateAllBars() {
                 for (let i = 0; i < characters.length; i++) {
                     const progress = computeProgress(i);
                     bars[i].style.width = Math.round(progress * 100) + '%';
                 }
             }
-
-            // === СИНХРОНИЗАЦИЯ ===
+            
+            // Синхронизация через localStorage
             let updatingFromSync = false;
             
             function saveToLocalStorage() {
@@ -287,52 +241,46 @@
                 }
                 localStorage.setItem('gamePositions', JSON.stringify(positions));
             }
-
+            
             function loadFromLocalStorage() {
                 const saved = localStorage.getItem('gamePositions');
                 if (saved) {
                     try {
                         const positions = JSON.parse(saved);
                         updatingFromSync = true;
-                        
                         for (let i = 0; i < Math.min(positions.length, characters.length); i++) {
                             if (positions[i]) {
                                 characters[i].style.left = positions[i].x + 'px';
                                 characters[i].style.top = positions[i].y + 'px';
                             }
                         }
-                        
                         updateAllBars();
                         updatingFromSync = false;
                     } catch (e) {}
                 }
             }
-
-            // === ПЕРЕТАСКИВАНИЕ ===
+            
+            // Перетаскивание
             characters.forEach((char, index) => {
                 let isDragging = false;
                 let startX, startY, startLeft, startTop;
-
+                
                 const onMouseMove = (e) => {
                     if (!isDragging) return;
-                    
                     const dx = e.clientX - startX;
                     const dy = e.clientY - startY;
-                    
                     let newLeft = startLeft + dx;
                     let newTop = startTop + dy;
                     
-                    // Границы поля (с учётом радиуса персонажа)
                     const screenRect = gameScreen.getBoundingClientRect();
                     newLeft = Math.max(28, Math.min(screenRect.width - 28, newLeft));
                     newTop = Math.max(28, Math.min(screenRect.height - 28, newTop));
                     
                     char.style.left = newLeft + 'px';
                     char.style.top = newTop + 'px';
-                    
                     updateAllBars();
                 };
-
+                
                 const onMouseUp = () => {
                     if (isDragging) {
                         isDragging = false;
@@ -341,7 +289,7 @@
                         saveToLocalStorage();
                     }
                 };
-
+                
                 char.addEventListener('mousedown', (e) => {
                     e.preventDefault();
                     isDragging = true;
@@ -354,15 +302,14 @@
                     document.addEventListener('mouseup', onMouseUp);
                 });
             });
-
-            // Старт
+            
+            // Инициализация
             loadFromLocalStorage();
             window.addEventListener('storage', (e) => {
                 if (e.key === 'gamePositions' && !updatingFromSync) {
                     loadFromLocalStorage();
                 }
             });
-            
             updateAllBars();
         })();
     </script>
