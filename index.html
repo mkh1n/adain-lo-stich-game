@@ -3,18 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameBoy пиксель-арт: Центральный квадрат</title>
+    <title>GameBoy пиксель-арт: Исправленные углы</title>
     <style>
-        /* === ПИКСЕЛЬ-АРТ СТИЛЬ === */
         * {
             box-sizing: border-box;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: optimize-contrast;
-            -ms-interpolation-mode: nearest-neighbor;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect width="16" height="16" fill="none" /><circle cx="8" cy="8" r="6" fill="white" stroke="black" stroke-width="2" /></svg>') 8 8, auto;
             font-family: 'Courier New', Courier, monospace;
         }
 
@@ -42,59 +36,45 @@
             align-items: center;
         }
 
-        /* Верхний ряд аватаров */
-        .avatars-row {
+        .avatars-row, .avatars-row-bottom {
             display: flex;
             justify-content: space-between;
-            width: 900px;
-            margin-bottom: 8px;
+            width: 1200px;
         }
+        
+        .avatars-row { margin-bottom: 12px; }
+        .avatars-row-bottom { margin-top: 12px; }
 
-        /* Нижний ряд аватаров */
-        .avatars-row-bottom {
-            display: flex;
-            justify-content: space-between;
-            width: 900px;
-            margin-top: 8px;
-        }
-
-        /* Отдельный аватар с рамкой */
         .avatar-frame {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             background: #3a5f3a;
             border: 4px solid #1e3a1e;
             box-shadow: inset -2px -2px 0 #0f280f, inset 2px 2px 0 #6b8c6b;
-            padding: 8px;
-            width: 180px;
-            image-rendering: pixelated;
+            padding: 8px 12px;
+            width: 220px;
         }
 
-        /* Квадрат под фото */
         .avatar-square {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             border: 4px solid #1e3a1e;
             background: #6b8c6b;
             box-shadow: inset -2px -2px 0 #2f4a2f, inset 2px 2px 0 #8bb08b;
-            image-rendering: pixelated;
         }
 
-        /* Цветные рамки для аватаров */
         .avatar-blue .avatar-square { background: #4a7db5; background-image: repeating-linear-gradient(45deg, #2a4d8a 0px, #2a4d8a 4px, #6a9fd0 4px, #6a9fd0 8px); }
         .avatar-yellow .avatar-square { background: #e3c14e; background-image: repeating-linear-gradient(45deg, #b38b2a 0px, #b38b2a 4px, #f5e17a 4px, #f5e17a 8px); }
         .avatar-pink .avatar-square { background: #d96c9e; background-image: repeating-linear-gradient(45deg, #a13e6f 0px, #a13e6f 4px, #f7a8c4 4px, #f7a8c4 8px); }
         .avatar-red .avatar-square { background: #c44b4b; background-image: repeating-linear-gradient(45deg, #8b2a2a 0px, #8b2a2a 4px, #e68080 4px, #e68080 8px); }
 
-        /* Статус бар */
         .status-bar-container {
             flex: 1;
-            height: 20px;
+            height: 24px;
             background: #1e3a1e;
             border: 3px solid #0f280f;
             box-shadow: inset 1px 1px 0 #0b1b0b;
-            position: relative;
         }
 
         .status-fill {
@@ -104,11 +84,10 @@
             box-shadow: inset -1px -1px 0 #2d6b2d, inset 1px 1px 0 #8fd08f;
         }
 
-        /* Игровой экран */
         .game-screen {
             position: relative;
-            width: 900px;
-            height: 500px;
+            width: 1200px;
+            height: 700px;
             background: #9a9e76;
             border: 6px solid #0f380f;
             border-radius: 12px;
@@ -117,95 +96,54 @@
             margin: 0 auto;
         }
 
-        /* Карта */
         .map-background {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                linear-gradient(45deg, #7c9f4f 2px, transparent 2px),
-                linear-gradient(-45deg, #6d8f42 2px, transparent 2px);
+            background: linear-gradient(45deg, #7c9f4f 2px, transparent 2px), linear-gradient(-45deg, #6d8f42 2px, transparent 2px);
             background-size: 16px 16px;
             background-color: #8bb15a;
-            border: 1px solid #3f6140;
-            box-shadow: inset 0 0 0 4px rgba(15, 56, 15, 0.3);
             z-index: 1;
         }
 
-        /* Центральный квадрат 2x2 (визуальная подсказка) */
         .center-square {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             transform: translate(-50%, -50%);
-            border: 3px dashed #f0e68c;
-            background: rgba(255, 255, 160, 0.1);
+            border: 4px solid #f0e68c;
+            background: rgba(240, 230, 140, 0.15);
+            box-shadow: 0 0 0 2px #b09050;
             z-index: 10;
             pointer-events: none;
         }
 
-        /* Индивидуальные финишные точки (невидимые, для отладки можно сделать видимыми) */
-        .finish-point {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: transparent; /* сделайте red чтобы увидеть точки */
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 15;
-            pointer-events: none;
-        }
-
-        /* Персонажи */
         .character {
             position: absolute;
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             border: 4px solid #1a2b1a;
             box-shadow: 0 4px 0 #0f1f0f, inset -2px -2px 0 rgba(0,0,0,0.5);
             transform: translate(-50%, -50%);
             z-index: 100;
             cursor: grab;
-            background-size: cover;
-            background-position: center;
         }
 
         .character:active {
             cursor: grabbing;
             filter: brightness(1.1);
-            box-shadow: 0 2px 0 #0f1f0f, inset -2px -2px 0 rgba(0,0,0,0.5);
             transform: translate(-50%, -48%);
         }
 
-        /* Цвета персонажей */
-        .char-blue { background: #4a7db5; background: radial-gradient(circle at 30% 30%, #7aa5d9, #1f4a8a); }
-        .char-yellow { background: #e3c14e; background: radial-gradient(circle at 30% 30%, #f5e17a, #b38b2a); }
-        .char-pink { background: #d96c9e; background: radial-gradient(circle at 30% 30%, #f7a8c4, #a13e6f); }
-        .char-red { background: #c44b4b; background: radial-gradient(circle at 30% 30%, #e68080, #8b2a2a); }
-
-        .connection-status {
-            background: #1e3a1e;
-            color: #9bbc0f;
-            padding: 4px 12px;
-            border: 2px solid #0f380f;
-            font-size: 14px;
-            margin-top: 12px;
-            display: inline-block;
-        }
-
-        .instruction {
-            text-align: center;
-            margin-top: 12px;
-            color: #0f380f;
-            font-size: 14px;
-            text-shadow: 2px 2px 0 #6b8c0c;
-            letter-spacing: 2px;
-        }
+        .char-blue { background: #4a7db5; }
+        .char-yellow { background: #e3c14e; }
+        .char-pink { background: #d96c9e; }
+        .char-red { background: #c44b4b; }
     </style>
 </head>
 <body>
@@ -214,143 +152,121 @@
             <!-- Верхний ряд аватаров -->
             <div class="avatars-row">
                 <div class="avatar-frame avatar-blue">
-                    <div class="avatar-square" id="avatar0"></div>
-                    <div class="status-bar-container">
-                        <div class="status-fill" id="bar0" style="width: 0%; background: #4a7db5;"></div>
-                    </div>
+                    <div class="avatar-square"></div>
+                    <div class="status-bar-container"><div class="status-fill" id="bar0" style="width: 0%; background: #4a7db5;"></div></div>
                 </div>
                 <div class="avatar-frame avatar-yellow">
-                    <div class="avatar-square" id="avatar1"></div>
-                    <div class="status-bar-container">
-                        <div class="status-fill" id="bar1" style="width: 0%; background: #e3c14e;"></div>
-                    </div>
+                    <div class="avatar-square"></div>
+                    <div class="status-bar-container"><div class="status-fill" id="bar1" style="width: 0%; background: #e3c14e;"></div></div>
                 </div>
             </div>
 
             <!-- Игровое поле -->
             <div class="game-screen" id="gameScreen">
-                <div class="map-background" id="mapImage"></div>
-                
-                <!-- Визуальный центральный квадрат -->
+                <div class="map-background"></div>
                 <div class="center-square"></div>
-                
-                <!-- Индивидуальные финишные точки (скрыты) -->
-                <div class="finish-point" id="finish0" style="top: 50%; left: 50%;"></div>
-                <div class="finish-point" id="finish1" style="top: 50%; left: 50%;"></div>
-                <div class="finish-point" id="finish2" style="top: 50%; left: 50%;"></div>
-                <div class="finish-point" id="finish3" style="top: 50%; left: 50%;"></div>
 
-                <!-- Персонажи -->
-                <div class="character char-blue" id="char0" data-id="0" style="top: 80px; left: 120px;"></div>
-                <div class="character char-yellow" id="char1" data-id="1" style="top: 80px; left: 780px;"></div>
-                <div class="character char-pink" id="char2" data-id="2" style="top: 420px; left: 120px;"></div>
-                <div class="character char-red" id="char3" data-id="3" style="top: 420px; left: 780px;"></div>
+                <!-- Персонажи ТОЧНО В УГЛАХ (координаты 40,40 от края с учётом радиуса) -->
+                <div class="character char-blue" id="char0" data-id="0" style="top: 40px; left: 40px;"></div>
+                <div class="character char-yellow" id="char1" data-id="1" style="top: 40px; left: 1160px;"></div>
+                <div class="character char-pink" id="char2" data-id="2" style="top: 660px; left: 40px;"></div>
+                <div class="character char-red" id="char3" data-id="3" style="top: 660px; left: 1160px;"></div>
             </div>
 
             <!-- Нижний ряд аватаров -->
             <div class="avatars-row-bottom">
                 <div class="avatar-frame avatar-pink">
-                    <div class="avatar-square" id="avatar2"></div>
-                    <div class="status-bar-container">
-                        <div class="status-fill" id="bar2" style="width: 0%; background: #d96c9e;"></div>
-                    </div>
+                    <div class="avatar-square"></div>
+                    <div class="status-bar-container"><div class="status-fill" id="bar2" style="width: 0%; background: #d96c9e;"></div></div>
                 </div>
                 <div class="avatar-frame avatar-red">
-                    <div class="avatar-square" id="avatar3"></div>
-                    <div class="status-bar-container">
-                        <div class="status-fill" id="bar3" style="width: 0%; background: #c44b4b;"></div>
-                    </div>
+                    <div class="avatar-square"></div>
+                    <div class="status-bar-container"><div class="status-fill" id="bar3" style="width: 0%; background: #c44b4b;"></div></div>
                 </div>
             </div>
-
-            <div class="connection-status" id="connectionStatus">🟡 Подключение...</div>
-            <div class="instruction">⬤ КАЖДЫЙ ПЕРСОНАЖ ИДЕТ К СВОЕЙ ТОЧКЕ В ЦЕНТРАЛЬНОМ КВАДРАТЕ ⬤</div>
         </div>
     </div>
 
     <script>
         (function() {
-            const USE_LOCAL_STORAGE_SYNC = true;
-            
-            // === ЭЛЕМЕНТЫ ===
             const characters = document.querySelectorAll('.character');
             const bars = [document.getElementById('bar0'), document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3')];
             const gameScreen = document.getElementById('gameScreen');
-            const connectionSpan = document.getElementById('connectionStatus');
             
-            // === ЦЕНТРАЛЬНЫЙ КВАДРАТ 2x2 ===
-            // Квадрат размером 100x100 пикселей (можно изменить)
-            const squareSize = 100; // сторона квадрата
+            // Центральный квадрат
+            const squareSize = 120;
+            const centerX = 600;
+            const centerY = 350;
             
-            // Индивидуальные финишные точки для каждого персонажа (внутри квадрата)
-            // Они расположены по углам внутреннего квадрата размером 40x40, чтобы не накладываться
-            const finishPoints = [
-                { x: -20, y: -20 }, // синий - левый верхний угол внутри квадрата
-                { x: 20, y: -20 },  // желтый - правый верхний
-                { x: -20, y: 20 },  // розовый - левый нижний
-                { x: 20, y: 20 }    // алый - правый нижний
+            // Границы квадрата
+            const squareLeft = centerX - squareSize/2;
+            const squareRight = centerX + squareSize/2;
+            const squareTop = centerY - squareSize/2;
+            const squareBottom = centerY + squareSize/2;
+            
+            // === ИСПРАВЛЕНО: Угловые позиции ТОЧНО соответствуют начальным координатам ===
+            const cornerPositions = [
+                { x: 40, y: 40 },    // синий - левый верхний угол
+                { x: 1160, y: 40 },  // желтый - правый верхний
+                { x: 40, y: 660 },   // розовый - левый нижний
+                { x: 1160, y: 660 }  // алый - правый нижний
             ];
             
-            // Центр экрана (середина квадрата)
-            const centerX = 450;
-            const centerY = 250;
-            
-            // Реальные координаты финишных точек (смещение от центра)
-            let targetPositions = [];
-            
-            // Максимальное расстояние (от стартовой позиции до своей цели)
+            // Максимальные расстояния от углов до ближайшей точки квадрата
             let maxDistances = [];
             
-            // Стартовые позиции
-            const startPositions = [
-                { x: 120, y: 80 },
-                { x: 780, y: 80 },
-                { x: 120, y: 420 },
-                { x: 780, y: 420 }
-            ];
-            
-            // Флаг обновления
-            let updatingFromSync = false;
-
-            // === ИНИЦИАЛИЗАЦИЯ ФИНИШНЫХ ТОЧЕК ===
-            function initTargetPositions() {
+            function calculateMaxDistances() {
                 for (let i = 0; i < 4; i++) {
-                    targetPositions[i] = {
-                        x: centerX + finishPoints[i].x,
-                        y: centerY + finishPoints[i].y
-                    };
+                    const corner = cornerPositions[i];
                     
-                    // Вычисляем максимальное расстояние (от старта до цели)
-                    const dx = startPositions[i].x - targetPositions[i].x;
-                    const dy = startPositions[i].y - targetPositions[i].y;
+                    // Находим ближайшую точку на границе квадрата
+                    let targetX = corner.x;
+                    let targetY = corner.y;
+                    
+                    if (corner.x < squareLeft) targetX = squareLeft;
+                    else if (corner.x > squareRight) targetX = squareRight;
+                    
+                    if (corner.y < squareTop) targetY = squareTop;
+                    else if (corner.y > squareBottom) targetY = squareBottom;
+                    
+                    const dx = corner.x - targetX;
+                    const dy = corner.y - targetY;
                     maxDistances[i] = Math.sqrt(dx*dx + dy*dy);
+                    
+                    // Защита от деления на ноль (если угол внутри квадрата)
+                    if (maxDistances[i] === 0) maxDistances[i] = 0.001;
                 }
             }
-            initTargetPositions();
+            calculateMaxDistances();
 
-            // === ФУНКЦИЯ ВЫЧИСЛЕНИЯ ПРОГРЕССА (индивидуальная для каждого) ===
+            // === ИСПРАВЛЕННАЯ ФУНКЦИЯ ПРОГРЕССА ===
             function computeProgress(charIndex) {
                 const char = characters[charIndex];
-                const left = parseFloat(char.style.left) || startPositions[charIndex].x;
-                const top = parseFloat(char.style.top) || startPositions[charIndex].y;
                 
-                const targetX = targetPositions[charIndex].x;
-                const targetY = targetPositions[charIndex].y;
+                // Берём текущие координаты или начальные (угловые)
+                const currentX = parseFloat(char.style.left) || cornerPositions[charIndex].x;
+                const currentY = parseFloat(char.style.top) || cornerPositions[charIndex].y;
                 
-                const dx = left - targetX;
-                const dy = top - targetY;
-                const distance = Math.sqrt(dx*dx + dy*dy);
+                // 1. Если внутри квадрата — сразу 100%
+                if (currentX >= squareLeft && currentX <= squareRight && 
+                    currentY >= squareTop && currentY <= squareBottom) {
+                    return 1.0;
+                }
                 
-                // Прогресс: 1 когда distance = 0, 0 когда distance >= maxDistance
-                let progress = 1 - (distance / maxDistances[charIndex]);
+                // 2. Считаем расстояние ОТ УГЛА
+                const corner = cornerPositions[charIndex];
+                const dx = currentX - corner.x;
+                const dy = currentY - corner.y;
+                const distanceFromCorner = Math.sqrt(dx*dx + dy*dy);
                 
-                // Если персонаж дальше стартовой позиции, прогресс может быть отрицательным - обнуляем
-                progress = Math.max(0, Math.min(1, progress));
+                // 3. Прогресс = сколько прошёл от угла к квадрату
+                // (нормируем на максимальное расстояние до квадрата)
+                let progress = distanceFromCorner / maxDistances[charIndex];
                 
-                return progress;
+                // 4. Обрезаем от 0 до 1 и возвращаем
+                return Math.max(0, Math.min(1, progress));
             }
 
-            // === ОБНОВЛЕНИЕ ВСЕХ БАРОВ ===
             function updateAllBars() {
                 for (let i = 0; i < characters.length; i++) {
                     const progress = computeProgress(i);
@@ -358,25 +274,21 @@
                 }
             }
 
-            // === СОХРАНЕНИЕ В LOCALSTORAGE ===
+            // === СИНХРОНИЗАЦИЯ ===
+            let updatingFromSync = false;
+            
             function saveToLocalStorage() {
-                if (!USE_LOCAL_STORAGE_SYNC) return;
-                
                 const positions = [];
                 for (let i = 0; i < characters.length; i++) {
                     positions.push({
-                        x: parseFloat(characters[i].style.left) || startPositions[i].x,
-                        y: parseFloat(characters[i].style.top) || startPositions[i].y
+                        x: parseFloat(characters[i].style.left) || cornerPositions[i].x,
+                        y: parseFloat(characters[i].style.top) || cornerPositions[i].y
                     });
                 }
                 localStorage.setItem('gamePositions', JSON.stringify(positions));
-                localStorage.setItem('gameUpdateTime', Date.now().toString());
             }
 
-            // === ЗАГРУЗКА ИЗ LOCALSTORAGE ===
             function loadFromLocalStorage() {
-                if (!USE_LOCAL_STORAGE_SYNC) return false;
-                
                 const saved = localStorage.getItem('gamePositions');
                 if (saved) {
                     try {
@@ -384,70 +296,49 @@
                         updatingFromSync = true;
                         
                         for (let i = 0; i < Math.min(positions.length, characters.length); i++) {
-                            if (positions[i] && typeof positions[i].x === 'number') {
-                                // Проверка границ
-                                const screenRect = gameScreen.getBoundingClientRect();
-                                const maxX = screenRect.width - characters[i].offsetWidth/2;
-                                const maxY = screenRect.height - characters[i].offsetHeight/2;
-                                const minX = characters[i].offsetWidth/2;
-                                const minY = characters[i].offsetHeight/2;
-                                
-                                let newX = Math.max(minX, Math.min(maxX, positions[i].x));
-                                let newY = Math.max(minY, Math.min(maxY, positions[i].y));
-                                
-                                characters[i].style.left = newX + 'px';
-                                characters[i].style.top = newY + 'px';
+                            if (positions[i]) {
+                                characters[i].style.left = positions[i].x + 'px';
+                                characters[i].style.top = positions[i].y + 'px';
                             }
                         }
                         
                         updateAllBars();
                         updatingFromSync = false;
-                        return true;
-                    } catch (e) {
-                        console.warn('Ошибка загрузки из localStorage', e);
-                    }
+                    } catch (e) {}
                 }
-                return false;
             }
 
-            // === НАСТРОЙКА ПЕРЕТАСКИВАНИЯ ===
+            // === ПЕРЕТАСКИВАНИЕ ===
             characters.forEach((char, index) => {
                 let isDragging = false;
                 let startX, startY, startLeft, startTop;
 
                 const onMouseMove = (e) => {
                     if (!isDragging) return;
-                    e.preventDefault();
-
+                    
                     const dx = e.clientX - startX;
                     const dy = e.clientY - startY;
-
+                    
                     let newLeft = startLeft + dx;
                     let newTop = startTop + dy;
-
-                    // Ограничиваем
+                    
+                    // Границы поля (с учётом радиуса персонажа)
                     const screenRect = gameScreen.getBoundingClientRect();
-                    const charWidth = char.offsetWidth;
-                    const charHeight = char.offsetHeight;
-
-                    newLeft = Math.max(charWidth/2, Math.min(screenRect.width - charWidth/2, newLeft));
-                    newTop = Math.max(charHeight/2, Math.min(screenRect.height - charHeight/2, newTop));
-
+                    newLeft = Math.max(28, Math.min(screenRect.width - 28, newLeft));
+                    newTop = Math.max(28, Math.min(screenRect.height - 28, newTop));
+                    
                     char.style.left = newLeft + 'px';
                     char.style.top = newTop + 'px';
-
+                    
                     updateAllBars();
                 };
 
-                const onMouseUp = (e) => {
+                const onMouseUp = () => {
                     if (isDragging) {
                         isDragging = false;
                         document.removeEventListener('mousemove', onMouseMove);
                         document.removeEventListener('mouseup', onMouseUp);
-                        
-                        if (USE_LOCAL_STORAGE_SYNC) {
-                            saveToLocalStorage();
-                        }
+                        saveToLocalStorage();
                     }
                 };
 
@@ -456,42 +347,23 @@
                     isDragging = true;
                     startX = e.clientX;
                     startY = e.clientY;
+                    startLeft = parseFloat(char.style.left) || cornerPositions[index].x;
+                    startTop = parseFloat(char.style.top) || cornerPositions[index].y;
                     
-                    startLeft = parseFloat(char.style.left) || startPositions[index].x;
-                    startTop = parseFloat(char.style.top) || startPositions[index].y;
-
                     document.addEventListener('mousemove', onMouseMove);
                     document.addEventListener('mouseup', onMouseUp);
                 });
             });
 
-            // === СИНХРОНИЗАЦИЯ ===
-            if (USE_LOCAL_STORAGE_SYNC) {
-                loadFromLocalStorage();
-                
-                window.addEventListener('storage', (e) => {
-                    if (e.key === 'gamePositions' && !updatingFromSync) {
-                        loadFromLocalStorage();
-                    }
-                });
-                
-                connectionSpan.innerHTML = '🟢 Локальная синхронизация';
-                connectionSpan.style.color = '#9bbc0f';
-            }
-
-            // Инициализация
-            setTimeout(() => {
-                updateAllBars();
-                if (USE_LOCAL_STORAGE_SYNC) {
-                    saveToLocalStorage();
+            // Старт
+            loadFromLocalStorage();
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'gamePositions' && !updatingFromSync) {
+                    loadFromLocalStorage();
                 }
-            }, 100);
-
-            // Карта
-            const mapEl = document.getElementById('mapImage');
-            mapEl.style.backgroundImage = "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAVUlEQVRYR+3UsQ0AIAgE0GMM7qBbuIBruIGFjYmx0PgLr4Fc8vJCLgJmZmb/txGZ2UZkZhvxPzOzEZnZRmRmG5GZbURmthGZ2UZkZhuRmW1EZrYRmdlGZGYb8QHPrB0YAgmxaQAAAABJRU5ErkJggg==')";
-            mapEl.style.backgroundRepeat = 'repeat';
-            mapEl.style.backgroundSize = '32px 32px';
+            });
+            
+            updateAllBars();
         })();
     </script>
 </body>
