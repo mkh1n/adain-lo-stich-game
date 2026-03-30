@@ -1,0 +1,1 @@
+Nothing needs to be added to .gitignore since the changes only include source/config files (README_SETUP.md) and an HTML file (index.html), which are not build artifacts, dependencies, or temporary files.

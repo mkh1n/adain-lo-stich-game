@@ -166,7 +166,42 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Импорт Supabase клиентской библиотеки
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // ВАЖНО: Замените эти значения на ваши собственные из проекта Supabase
+        // 1. Создайте бесплатный проект на https://supabase.com
+        // 2. В Settings -> API найдите Project URL и anon/public key
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+        // Инициализация клиента Supabase
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Таблица для хранения позиций (создайте её в Supabase)
+        const TABLE_NAME = 'game_positions';
+
+        // Структура таблицы в Supabase (выполните этот SQL в редакторе SQL в Supabase):
+        /*
+        CREATE TABLE game_positions (
+          id INTEGER PRIMARY KEY CHECK (id >= 0 AND id <= 3),
+          x NUMERIC NOT NULL DEFAULT 40,
+          y NUMERIC NOT NULL DEFAULT 40,
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        INSERT INTO game_positions (id, x, y) VALUES 
+          (0, 40, 40),
+          (1, 1160, 40),
+          (2, 40, 660),
+          (3, 1160, 660)
+        ON CONFLICT (id) DO NOTHING;
+
+        -- Включить Realtime для таблицы
+        ALTER PUBLICATION supabase_realtime ADD TABLE game_positions;
+        */
+
         (function() {
             const characters = document.querySelectorAll('.character');
             const bars = [document.getElementById('bar0'), document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3')];
@@ -227,43 +262,99 @@
                     bars[i].style.width = Math.round(progress * 100) + '%';
                 }
             }
+
+            // Флаг для предотвращения циклических обновлений
+            let isUpdatingFromRemote = false;
             
-            // Синхронизация через localStorage
-            let updatingFromSync = false;
-            
-            function saveToLocalStorage() {
-                const positions = [];
-                for (let i = 0; i < characters.length; i++) {
-                    positions.push({
-                        x: parseFloat(characters[i].style.left) || cornerPositions[i].x,
-                        y: parseFloat(characters[i].style.top) || cornerPositions[i].y
-                    });
-                }
-                localStorage.setItem('gamePositions', JSON.stringify(positions));
+            // Обновление позиции персонажа на экране
+            function updateCharacterPosition(index, x, y) {
+                isUpdatingFromRemote = true;
+                characters[index].style.left = x + 'px';
+                characters[index].style.top = y + 'px';
+                updateAllBars();
+                setTimeout(() => { isUpdatingFromRemote = false; }, 100);
             }
-            
-            function loadFromLocalStorage() {
-                const saved = localStorage.getItem('gamePositions');
-                if (saved) {
-                    try {
-                        const positions = JSON.parse(saved);
-                        updatingFromSync = true;
-                        for (let i = 0; i < Math.min(positions.length, characters.length); i++) {
-                            if (positions[i]) {
-                                characters[i].style.left = positions[i].x + 'px';
-                                characters[i].style.top = positions[i].y + 'px';
+
+            // Загрузка начальных позиций из Supabase
+            async function loadPositions() {
+                try {
+                    const { data, error } = await supabase
+                        .from(TABLE_NAME)
+                        .select('*')
+                        .order('id');
+                    
+                    if (error) {
+                        console.error('Ошибка загрузки позиций:', error);
+                        console.log('Убедитесь, что вы создали таблицу game_positions в Supabase и вставили правильные ключи');
+                        return;
+                    }
+
+                    if (data && data.length > 0) {
+                        data.forEach(row => {
+                            if (row.id >= 0 && row.id < characters.length) {
+                                updateCharacterPosition(row.id, row.x, row.y);
+                            }
+                        });
+                    }
+                } catch (err) {
+                    console.error('Ошибка при загрузке:', err);
+                }
+            }
+
+            // Обновление позиции в Supabase
+            async function updatePositionInDB(index, x, y) {
+                try {
+                    const { error } = await supabase
+                        .from(TABLE_NAME)
+                        .update({ x: x, y: y, updated_at: new Date().toISOString() })
+                        .eq('id', index);
+                    
+                    if (error) {
+                        console.error('Ошибка обновления позиции:', error);
+                    }
+                } catch (err) {
+                    console.error('Ошибка при обновлении:', err);
+                }
+            }
+
+            // Подписка на изменения в реальном времени через Supabase Realtime
+            function subscribeToChanges() {
+                const channel = supabase
+                    .channel('game_positions_changes')
+                    .on(
+                        'postgres_changes',
+                        {
+                            event: 'UPDATE',
+                            schema: 'public',
+                            table: TABLE_NAME
+                        },
+                        (payload) => {
+                            const { new: newRow } = payload;
+                            const index = newRow.id;
+                            
+                            // Не обновляем, если это наше локальное изменение
+                            if (!isUpdatingFromRemote && index >= 0 && index < characters.length) {
+                                const currentX = parseFloat(characters[index].style.left);
+                                const currentY = parseFloat(characters[index].style.top);
+                                
+                                // Обновляем только если позиция действительно изменилась
+                                if (Math.abs(newRow.x - currentX) > 0.1 || Math.abs(newRow.y - currentY) > 0.1) {
+                                    updateCharacterPosition(index, newRow.x, newRow.y);
+                                }
                             }
                         }
-                        updateAllBars();
-                        updatingFromSync = false;
-                    } catch (e) {}
-                }
+                    )
+                    .subscribe();
+                
+                console.log('Подписка на изменения создана');
             }
-            
+
             // Перетаскивание
             characters.forEach((char, index) => {
                 let isDragging = false;
                 let startX, startY, startLeft, startTop;
+                let lastSavedX, lastSavedY;
+                let saveTimeout = null;
                 
                 const onMouseMove = (e) => {
                     if (!isDragging) return;
@@ -286,7 +377,11 @@
                         isDragging = false;
                         document.removeEventListener('mousemove', onMouseMove);
                         document.removeEventListener('mouseup', onMouseUp);
-                        saveToLocalStorage();
+                        
+                        // Сохраняем позицию в Supabase
+                        const finalX = parseFloat(char.style.left);
+                        const finalY = parseFloat(char.style.top);
+                        updatePositionInDB(index, finalX, finalY);
                     }
                 };
                 
@@ -302,14 +397,64 @@
                     document.addEventListener('mouseup', onMouseUp);
                 });
             });
+
+            // Для мобильных устройств - поддержка touch событий
+            characters.forEach((char, index) => {
+                let isTouchDragging = false;
+                let startTouchX, startTouchY, startLeft, startTop;
+                
+                const onTouchMove = (e) => {
+                    if (!isTouchDragging) return;
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const dx = touch.clientX - startTouchX;
+                    const dy = touch.clientY - startTouchY;
+                    let newLeft = startLeft + dx;
+                    let newTop = startTop + dy;
+                    
+                    const screenRect = gameScreen.getBoundingClientRect();
+                    newLeft = Math.max(28, Math.min(screenRect.width - 28, newLeft));
+                    newTop = Math.max(28, Math.min(screenRect.height - 28, newTop));
+                    
+                    char.style.left = newLeft + 'px';
+                    char.style.top = newTop + 'px';
+                    updateAllBars();
+                };
+                
+                const onTouchEnd = () => {
+                    if (isTouchDragging) {
+                        isTouchDragging = false;
+                        const finalX = parseFloat(char.style.left);
+                        const finalY = parseFloat(char.style.top);
+                        updatePositionInDB(index, finalX, finalY);
+                    }
+                };
+                
+                char.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    isTouchDragging = true;
+                    const touch = e.touches[0];
+                    startTouchX = touch.clientX;
+                    startTouchY = touch.clientY;
+                    startLeft = parseFloat(char.style.left) || cornerPositions[index].x;
+                    startTop = parseFloat(char.style.top) || cornerPositions[index].y;
+                }, { passive: false });
+                
+                char.addEventListener('touchmove', onTouchMove, { passive: false });
+                char.addEventListener('touchend', onTouchEnd);
+            });
             
             // Инициализация
-            loadFromLocalStorage();
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'gamePositions' && !updatingFromSync) {
-                    loadFromLocalStorage();
-                }
-            });
+            console.log('Инициализация игры...');
+            console.log('Supabase URL:', SUPABASE_URL);
+            
+            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+                alert('⚠️ Внимание! Вам нужно настроить Supabase:\n\n1. Создайте бесплатный проект на https://supabase.com\n2. Вставьте Project URL и anon key в код (строки 10-11)\n3. Выполните SQL-запрос для создания таблицы (см. комментарий в коде)\n\nБез этого синхронизация между пользователями не будет работать.');
+            } else {
+                loadPositions();
+                subscribeToChanges();
+            }
+            
             updateAllBars();
         })();
     </script>
