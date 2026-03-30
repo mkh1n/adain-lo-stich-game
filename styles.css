@@ -1,0 +1,125 @@
+ <style>
+        /* Все стили без изменений (такие же, как в предыдущем рабочем варианте) */
+        * {
+            box-sizing: border-box;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        body {
+            background: #2d1b0e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+        }
+        .gameboy-frame {
+            background: #9bbc0f;
+            padding: 24px 24px 32px 24px;
+            border-radius: 20px 20px 30px 30px;
+            box-shadow: inset -4px -4px 0 #6b8c0c, inset 4px 4px 0 #c4e01e, 0 10px 0 #3f2e1b;
+            border: 2px solid #0f380f;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .avatars-row, .avatars-row-bottom {
+            display: flex;
+            justify-content: space-between;
+            width: 1200px;
+        }
+        .avatars-row { margin-bottom: 12px; }
+        .avatars-row-bottom { margin-top: 12px; }
+        .avatar-frame {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #3a5f3a;
+            border: 4px solid #1e3a1e;
+            box-shadow: inset -2px -2px 0 #0f280f, inset 2px 2px 0 #6b8c6b;
+            padding: 8px 12px;
+            width: 220px;
+        }
+        .avatar-square {
+            width: 56px;
+            height: 56px;
+            border: 4px solid #1e3a1e;
+            background: #6b8c6b;
+            box-shadow: inset -2px -2px 0 #2f4a2f, inset 2px 2px 0 #8bb08b;
+        }
+        .avatar-blue .avatar-square { background: #4a7db5; background-image: repeating-linear-gradient(45deg, #2a4d8a 0px, #2a4d8a 4px, #6a9fd0 4px, #6a9fd0 8px); }
+        .avatar-yellow .avatar-square { background: #e3c14e; background-image: repeating-linear-gradient(45deg, #b38b2a 0px, #b38b2a 4px, #f5e17a 4px, #f5e17a 8px); }
+        .avatar-pink .avatar-square { background: #d96c9e; background-image: repeating-linear-gradient(45deg, #a13e6f 0px, #a13e6f 4px, #f7a8c4 4px, #f7a8c4 8px); }
+        .avatar-red .avatar-square { background: #c44b4b; background-image: repeating-linear-gradient(45deg, #8b2a2a 0px, #8b2a2a 4px, #e68080 4px, #e68080 8px); }
+        .status-bar-container {
+            flex: 1;
+            height: 24px;
+            background: #1e3a1e;
+            border: 3px solid #0f280f;
+            box-shadow: inset 1px 1px 0 #0b1b0b;
+        }
+        .status-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s;
+            box-shadow: inset -1px -1px 0 #2d6b2d, inset 1px 1px 0 #8fd08f;
+        }
+        .game-screen {
+            position: relative;
+            width: 1200px;
+            height: 700px;
+            background: #9a9e76;
+            border: 6px solid #0f380f;
+            border-radius: 12px;
+            box-shadow: inset 0 0 0 2px #6b8c0c;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        .map-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #7c9f4f 2px, transparent 2px), linear-gradient(-45deg, #6d8f42 2px, transparent 2px);
+            background-size: 16px 16px;
+            background-color: #8bb15a;
+            z-index: 1;
+        }
+        .center-square {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120px;
+            height: 120px;
+            transform: translate(-50%, -50%);
+            border: 4px solid #f0e68c;
+            background: rgba(240, 230, 140, 0.15);
+            box-shadow: 0 0 0 2px #b09050;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .character {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 4px solid #1a2b1a;
+            box-shadow: 0 4px 0 #0f1f0f, inset -2px -2px 0 rgba(0,0,0,0.5);
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            cursor: grab;
+        }
+        .character:active {
+            cursor: grabbing;
+            filter: brightness(1.1);
+            transform: translate(-50%, -48%);
+        }
+        .char-blue { background: #4a7db5; }
+        .char-yellow { background: #e3c14e; }
+        .char-pink { background: #d96c9e; }
+        .char-red { background: #c44b4b; }
