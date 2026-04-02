@@ -16,8 +16,6 @@ body {
 }
 
 .gameboy-frame {
-    height: 95vh;
-    width: 95vw;
     background: #9bbc0f;
     padding: 24px 24px 32px 24px;
     border-radius: 20px 20px 30px 30px;
@@ -37,7 +35,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
+    height: -webkit-fill-available;
 }
 
 .avatars-row-left {
