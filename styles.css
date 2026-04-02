@@ -16,6 +16,8 @@ body {
 }
 
 .gameboy-frame {
+    height: 95vh;
+    width: 95vw;
     background: #9bbc0f;
     padding: 24px 24px 32px 24px;
     border-radius: 20px 20px 30px 30px;
@@ -24,24 +26,26 @@ body {
 }
 
 .game-container {
+    height: 100%;
+    width: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
-.avatars-row,
-.avatars-row-bottom {
+.avatars-row-right,
+.avatars-row-left {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    width: 1200px;
+    height: 100%;
 }
 
-.avatars-row {
-    margin-bottom: 12px;
+.avatars-row-left {
+    margin-right: 12px;
 }
 
-.avatars-row-bottom {
-    margin-top: 12px;
+.avatars-row-right {
+    margin-left: 12px;
 }
 
 .avatar-frame {
@@ -100,27 +104,21 @@ body {
 
 .game-screen {
     position: relative;
-    width: 1200px;
-    height: 700px;
+    aspect-ratio: 73/49;
+    height: 870px;
+    width: 1288px;
     background: #9a9e76;
     border: 6px solid #0f380f;
     border-radius: 12px;
     box-shadow: inset 0 0 0 2px #6b8c0c;
     overflow: hidden;
     margin: 0 auto;
+      background: url(./img/bg.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+
 }
 
-.map-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, #7c9f4f 2px, transparent 2px), linear-gradient(-45deg, #6d8f42 2px, transparent 2px);
-    background-size: 16px 16px;
-    background-color: #8bb15a;
-    z-index: 1;
-}
 
 .center-square {
     position: absolute;
@@ -138,15 +136,13 @@ body {
 
 .character {
     position: absolute;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    border: 4px solid #1a2b1a;
-    box-shadow: 0 4px 0 #0f1f0f, inset -2px -2px 0 rgba(0, 0, 0, 0.5);
+    background-size: cover;
+    width: 150px;
+    height: 150px;
     transform: translate(-50%, -50%);
     z-index: 100;
     cursor: grab;
-}
+image-rendering: crisp-edges;}
 
 .character:active {
     cursor: grabbing;
@@ -155,17 +151,25 @@ body {
 }
 
 .char-blue {
-    background: #4a7db5;
+    background-image: url('./img/stitch.png');
+        width: 131px;
+    height: 82px;
 }
 
 .char-yellow {
-    background: #e3c14e;
+    background-image: url('./img/bb.png');
+ width: 137px;
+    height: 112px;
 }
 
 .char-pink {
-    background: #d96c9e;
+    background-image: url('./img/lilo.png');
+        width: 88px;
+    height: 97px;
 }
 
 .char-red {
-    background: #c44b4b;
+    width: 107px;
+    height: 90px;
+    background-image: url('./img/gantu.png');
 }
